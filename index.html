@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DESTA - Digital Health Guardian</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Space+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00f0ff;
+            --secondary: #7b2cbf;
+            --accent: #ff006e;
+            --success: #00ff88;
+            --warning: #ffbe0b;
+            --danger: #ff006e;
+            --dark: #0a0a0f;
+            --darker: #050508;
+            --card-bg: rgba(15, 15, 25, 0.85);
+            --glass: rgba(255, 255, 255, 0.03);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--darker);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(123, 44, 191, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(0, 240, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(255, 0, 110, 0.05) 0%, transparent 70%);
+        }
+
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-image: 
+                linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: perspective(500px) rotateX(60deg) translateY(0); }
+            100% { transform: perspective(500px) rotateX(60deg) translateY(50px); }
+        }
+
+        /* Header */
+        .header {
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+            backdrop-filter: blur(20px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 20px;
+            animation: pulse-glow 2s ease-in-out infinite;
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.5);
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 30px rgba(0, 240, 255, 0.5); }
+            50% { box-shadow: 0 0 50px rgba(0, 240, 255, 0.8), 0 0 80px rgba(123, 44, 191, 0.4); }
+        }
+
+        .logo-text h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 28px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 4px;
+        }
+
+        .logo-text span {
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .status-bar {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            animation: blink 1.5s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Main Container */
+        .main-container {
+            display: grid;
+            grid-template-columns: 300px 1fr 350px;
+            gap: 20px;
+            padding: 20px 40px;
+            min-height: calc(100vh - 100px);
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            border: 1px solid rgba(0, 240, 255, 0.1);
+            backdrop-filter: blur(20px);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(0, 240, 255, 0.3);
+            box-shadow: 0 10px 40px rgba(0, 240, 255, 0.1);
+        }
+
+        .card-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            letter-spacing: 2px;
+            color: var(--primary);
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        /* Left Panel - Digital Twin */
+        .left-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .twin-visualization {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .human-silhouette {
+            width: 150px;
+            height: 280px;
+            position: relative;
+        }
+
+        .silhouette-svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.5));
+        }
+
+        .scan-line {
+            position: absolute;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            top: 0;
+            animation: scanDown 3s ease-in-out infinite;
+        }
+
+        @keyframes scanDown {
+            0%, 100% { top: 0; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+
+        .data-points {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .data-point {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--primary);
+            animation: dataPulse 2s ease-in-out infinite;
+        }
+
+        .data-point::before {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border: 1px solid var(--primary);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: ripple 2s ease-out infinite;
+        }
+
+        @keyframes dataPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        @keyframes ripple {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
+        }
+
+        .data-point.heart { top: 25%; left: 55%; background: var(--accent); }
+        .data-point.brain { top: 5%; left: 50%; background: var(--secondary); }
+        .data-point.liver { top: 35%; left: 40%; background: var(--warning); }
+        .data-point.kidney { top: 45%; left: 60%; background: var(--success); }
+
+        .twin-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .twin-stat {
+            background: var(--glass);
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid rgba(0, 240, 255, 0.1);
+        }
+
+        .twin-stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            color: var(--primary);
+        }
+
+        .twin-stat-label {
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Center Panel */
+        .center-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* AI Core */
+        .ai-core {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .ai-orb-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 30px;
+        }
+
+        .ai-orb {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, 
+                rgba(0, 240, 255, 0.8), 
+                rgba(123, 44, 191, 0.6), 
+                rgba(255, 0, 110, 0.4));
+            animation: orbFloat 4s ease-in-out infinite, orbRotate 10s linear infinite;
+            box-shadow: 
+                0 0 60px rgba(0, 240, 255, 0.5),
+                0 0 100px rgba(123, 44, 191, 0.3),
+                inset 0 0 60px rgba(255, 255, 255, 0.1);
+        }
+
+        @keyframes orbFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        @keyframes orbRotate {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
+        .ai-rings {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 250px;
+            height: 250px;
+            border: 2px solid rgba(0, 240, 255, 0.3);
+            border-radius: 50%;
+            animation: ringRotate 8s linear infinite;
+        }
+
+        .ai-rings::before, .ai-rings::after {
+            content: '';
+            position: absolute;
+            border: 2px solid rgba(123, 44, 191, 0.2);
+            border-radius: 50%;
+        }
+
+        .ai-rings::before {
+            width: 280px;
+            height: 280px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: ringRotate 12s linear infinite reverse;
+        }
+
+        .ai-rings::after {
+            width: 310px;
+            height: 310px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: ringRotate 16s linear infinite;
+        }
+
+        @keyframes ringRotate {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .ai-status-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 24px;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: textGlow 3s ease-in-out infinite;
+        }
+
+        .ai-message {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 400px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .typing-indicator {
+            display: inline-flex;
+            gap: 4px;
+            margin-left: 5px;
+        }
+
+        .typing-indicator span {
+            width: 6px;
+            height: 6px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: typing 1.4s ease-in-out infinite;
+        }
+
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 100% { transform: translateY(0); opacity: 0.5; }
+            50% { transform: translateY(-5px); opacity: 1; }
+        }
+
+        /* Predictive Analytics */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .metric-card {
+            background: var(--glass);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(0, 240, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+
+        .metric-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .metric-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 28px;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .metric-label {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .metric-trend {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 10px;
+            font-size: 12px;
+        }
+
+        .trend-up { color: var(--success); }
+        .trend-down { color: var(--danger); }
+        .trend-stable { color: var(--warning); }
+
+        .mini-chart {
+            height: 40px;
+            margin-top: 15px;
+            display: flex;
+            align-items: flex-end;
+            gap: 3px;
+        }
+
+        .chart-bar {
+            flex: 1;
+            background: linear-gradient(to top, var(--primary), transparent);
+            border-radius: 2px;
+            animation: chartGrow 1s ease-out forwards;
+        }
+
+        @keyframes chartGrow {
+            from { height: 0; }
+        }
+
+        /* Right Panel */
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Genomic Panel */
+        .genome-visual {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        .dna-helix {
+            width: 60px;
+            height: 150px;
+            position: relative;
+        }
+
+        .dna-strand {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .nucleotide {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: nucleotideFloat 3s ease-in-out infinite;
+        }
+
+        .nucleotide.a { background: #ff6b6b; }
+        .nucleotide.t { background: #4ecdc4; }
+        .nucleotide.g { background: #ffe66d; }
+        .nucleotide.c { background: #95e1d3; }
+
+        @keyframes nucleotideFloat {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(5px); }
+        }
+
+        .gene-info {
+            padding: 15px;
+            background: var(--glass);
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+
+        .gene-name {
+            font-family: 'Space Mono', monospace;
+            color: var(--primary);
+            font-size: 14px;
+        }
+
+        .gene-status {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 5px;
+        }
+
+        /* Security Panel */
+        .security-features {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .security-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--glass);
+            border-radius: 10px;
+            border: 1px solid rgba(0, 255, 136, 0.1);
+        }
+
+        .security-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--success), rgba(0, 255, 136, 0.3));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .security-text {
+            flex: 1;
+        }
+
+        .security-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .security-desc {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Alert System */
+        .alert-card {
+            border-color: rgba(255, 0, 110, 0.3);
+        }
+
+        .alert-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(255, 0, 110, 0.1);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border-left: 3px solid var(--accent);
+        }
+
+        .alert-item.warning {
+            background: rgba(255, 190, 11, 0.1);
+            border-left-color: var(--warning);
+        }
+
+        .alert-item.success {
+            background: rgba(0, 255, 136, 0.1);
+            border-left-color: var(--success);
+        }
+
+        .alert-icon {
+            font-size: 18px;
+        }
+
+        .alert-content {
+            flex: 1;
+        }
+
+        .alert-title {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .alert-desc {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .alert-time {
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.4);
+            font-family: 'Space Mono', monospace;
+        }
+
+        /* Chat Interface */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 200px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px 0;
+        }
+
+        .chat-message {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+            animation: messageIn 0.3s ease-out;
+        }
+
+        @keyframes messageIn {
+            from { opacity: 0; transform: translateY(10px); }
+        }
+
+        .chat-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .chat-bubble {
+            background: var(--glass);
+            padding: 10px 14px;
+            border-radius: 12px;
+            border-top-left-radius: 4px;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 80%;
+        }
+
+        .chat-input-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: var(--glass);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            border-radius: 25px;
+            padding: 12px 20px;
+            color: #fff;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+        }
+
+        .chat-input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .chat-send {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            color: #fff;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-send:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.5);
+        }
+
+        /* Responsive */
+        @media (max-width: 1400px) {
+            .main-container {
+                grid-template-columns: 1fr 1fr;
+            }
+            .left-panel {
+                display: none;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                padding: 15px;
+            }
+            .header {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 15px;
+            }
+            .status-bar {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .analytics-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+    <div class="grid-overlay"></div>
+
+    <header class="header">
+        <div class="logo">
+            <div class="logo-icon">D</div>
+            <div class="logo-text">
+                <h1>DESTA</h1>
+                <span>Digital Ecosystem for Sentinel & Tracking Analytics</span>
+            </div>
+        </div>
+        <div class="status-bar">
+            <div class="status-item">
+                <div class="status-dot"></div>
+                <span>SYSTEM ONLINE</span>
+            </div>
+            <div class="status-item">
+                <div class="status-dot" style="background: var(--secondary);"></div>
+                <span>FEDERATED LEARNING ACTIVE</span>
+            </div>
+            <div class="status-item">
+                <div class="status-dot" style="background: var(--warning);"></div>
+                <span>ZKP ENCRYPTION: AES-256</span>
+            </div>
+            <div class="status-item" id="datetime">
+                <span>--:--:--</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <!-- Left Panel - Digital Twin -->
+        <div class="left-panel">
+            <div class="card twin-visualization">
+                <div class="card-header">
+                    <span class="card-title">⬡ DIGITAL TWIN</span>
+                    <span style="font-size: 10px; color: var(--success);">● SYNCED</span>
+                </div>
+                <div class="card-body" style="display: flex; flex-direction: column; align-items: center;">
+                    <div class="human-silhouette">
+                        <svg class="silhouette-svg" viewBox="0 0 100 200" fill="none">
+                            <ellipse cx="50" cy="20" rx="15" ry="18" fill="url(#grad1)" opacity="0.8"/>
+                            <path d="M35 38 L30 100 L35 100 L40 70 L50 75 L60 70 L65 100 L70 100 L65 38 Z" fill="url(#grad1)" opacity="0.6"/>
+                            <path d="M30 100 L25 160 L35 160 L40 100 Z" fill="url(#grad1)" opacity="0.5"/>
+                            <path d="M70 100 L75 160 L65 160 L60 100 Z" fill="url(#grad1)" opacity="0.5"/>
+                            <path d="M25 160 L20 195 L30 195 L35 160 Z" fill="url(#grad1)" opacity="0.4"/>
+                            <path d="M75 160 L80 195 L70 195 L65 160 Z" fill="url(#grad1)" opacity="0.4"/>
+                            <defs>
+                                <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#00f0ff;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#7b2cbf;stop-opacity:1" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                        <div class="scan-line"></div>
+                        <div class="data-points">
+                            <div class="data-point brain"></div>
+                            <div class="data-point heart"></div>
+                            <div class="data-point liver"></div>
+                            <div class="data-point kidney"></div>
+                        </div>
+                    </div>
+                    <div class="twin-stats">
+                        <div class="twin-stat">
+                            <div class="twin-stat-value">98.7%</div>
+                            <div class="twin-stat-label">Sync Rate</div>
+                        </div>
+                        <div class="twin-stat">
+                            <div class="twin-stat-value">1.2ms</div>
+                            <div class="twin-stat-label">Latency</div>
+                        </div>
+                        <div class="twin-stat">
+                            <div class="twin-stat-value">847</div>
+                            <div class="twin-stat-label">Data Points</div>
+                        </div>
+                        <div class="twin-stat">
+                            <div class="twin-stat-value">FHIR</div>
+                            <div class="twin-stat-label">Protocol</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Panel -->
+        <div class="center-panel">
+            <!-- AI Core -->
+            <div class="card ai-core">
+                <div class="ai-orb-container">
+                    <div class="ai-orb"></div>
+                    <div class="ai-rings"></div>
+                </div>
+                <div class="ai-status-text">GUARDIAN ACTIVE</div>
+                <p class="ai-message">
+                    I'm continuously monitoring your health parameters. All vital signs are within optimal range. 
+                    Your cardiac rhythm shows excellent HRV patterns.
+                    <span class="typing-indicator">
+                        <span></span><span></span><span></span>
+                    </span>
+                </p>
+            </div>
+
+            <!-- Predictive Analytics -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">◈ SENTINEL PREDICTIVE ENGINE</span>
+                    <span style="font-size: 10px; color: var(--primary);">48H FORECAST</span>
+                </div>
+                <div class="card-body">
+                    <div class="analytics-grid">
+                        <div class="metric-card">
+                            <div class="metric-icon">💓</div>
+                            <div class="metric-value" id="heartRate">72</div>
+                            <div class="metric-label">Heart Rate</div>
+                            <div class="metric-trend trend-stable">
+                                <span>→</span> Stable
+                            </div>
+                            <div class="mini-chart">
+                                <div class="chart-bar" style="height: 60%;"></div>
+                                <div class="chart-bar" style="height: 75%;"></div>
+                                <div class="chart-bar" style="height: 65%;"></div>
+                                <div class="chart-bar" style="height: 80%;"></div>
+                                <div class="chart-bar" style="height: 70%;"></div>
+                                <div class="chart-bar" style="height: 85%;"></div>
+                                <div class="chart-bar" style="height: 72%;"></div>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon">🩸</div>
+                            <div class="metric-value" id="glucose">95</div>
+                            <div class="metric-label">Blood Glucose</div>
+                            <div class="metric-trend trend-up">
+                                <span>↗</span> +3 mg/dL
+                            </div>
+                            <div class="mini-chart">
+                                <div class="chart-bar" style="height: 50%;"></div>
+                                <div class="chart-bar" style="height: 55%;"></div>
+                                <div class="chart-bar" style="height: 60%;"></div>
+                                <div class="chart-bar" style="height: 58%;"></div>
+                                <div class="chart-bar" style="height: 65%;"></div>
+                                <div class="chart-bar" style="height: 70%;"></div>
+                                <div class="chart-bar" style="height: 68%;"></div>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon">🫁</div>
+                            <div class="metric-value" id="oxygen">98<span style="font-size: 14px;">%</span></div>
+                            <div class="metric-label">O₂ Saturation</div>
+                            <div class="metric-trend trend-stable">
+                                <span>→</span> Optimal
+                            </div>
+                            <div class="mini-chart">
+                                <div class="chart-bar" style="height: 95%;"></div>
+                                <div class="chart-bar" style="height: 98%;"></div>
+                                <div class="chart-bar" style="height: 96%;"></div>
+                                <div class="chart-bar" style="height: 98%;"></div>
+                                <div class="chart-bar" style="height: 97%;"></div>
+                                <div class="chart-bar" style="height: 98%;"></div>
+                                <div class="chart-bar" style="height: 98%;"></div>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon">📊</div>
+                            <div class="metric-value">42<span style="font-size: 14px;">ms</span></div>
+                            <div class="metric-label">HRV Index</div>
+                            <div class="metric-trend trend-up">
+                                <span>↗</span> Improving
+                            </div>
+                            <div class="mini-chart">
+                                <div class="chart-bar" style="height: 40%;"></div>
+                                <div class="chart-bar" style="height: 45%;"></div>
+                                <div class="chart-bar" style="height: 50%;"></div>
+                                <div class="chart-bar" style="height: 48%;"></div>
+                                <div class="chart-bar" style="height: 55%;"></div>
+                                <div class="chart-bar" style="height: 60%;"></div>
+                                <div class="chart-bar" style="height: 58%;"></div>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon">🧬</div>
+                            <div class="metric-value">LOW</div>
+                            <div class="metric-label">Crisis Risk</div>
+                            <div class="metric-trend trend-up" style="color: var(--success);">
+                                <span>✓</span> No alerts
+                            </div>
+                            <div class="mini-chart">
+                                <div class="chart-bar" style="height: 20%; background: linear-gradient(to top, var(--success), transparent);"></div>
+                                <div class="chart-bar" style="height: 15%; background: linear-gradient(to top, var(--success), transparent);"></div>
+                                <div class="chart-bar" style="height: 18%; background: linear-gradient(to top, var(--success), transparent);"></div>
+                                <div class="chart-bar" style="height: 12%; background: linear-gradient(to top, var(--success), transparent);"></div>
+                                <div class="chart-bar" style="height: 10%; background: linear-gradient(to top, var(--success), transparent);"></div>
+                                <div class="chart-bar" style="height: 8%; background: linear-gradient(to top, var(--success), transparent);"></div>
+                                <div class="chart-bar" style="height: 5%; background: linear-gradient(to top, var(--success), transparent);"></div>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon">💊</div>
+                            <div class="metric-value">OK</div>
+                            <div class="metric-label">Drug Interact.</div>
+                            <div class="metric-trend trend-stable">
+                                <span>◈</span> CYP2D6 Clear
+                            </div>
+                            <div class="mini-chart">
+                                <div class="chart-bar" style="height: 100%; background: linear-gradient(to top, var(--success), transparent);"></div>
+                                <div class="chart-bar" style="height: 100%; background: linear-gradient(to top, var(--success), transparent);"></div>
+                                <div class="chart-bar" style="height: 100%; background: linear-gradient(to top, var(--success), transparent);"></div>
+                                <div class="chart-bar" style="height: 100%; background: linear-gradient(to top, var(--success), transparent);"></div>
+                                <div class="chart-bar" style="height: 100%; background: linear-gradient(to top, var(--success), transparent);"></div>
+                                <div class="chart-bar" style="height: 100%; background: linear-gradient(to top, var(--success), transparent);"></div>
+                                <div class="chart-bar" style="height: 100%; background: linear-gradient(to top, var(--success), transparent);"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Interface -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">◉ DESTA GUARDIAN INTERFACE</span>
+                    <span style="font-size: 10px; color: var(--success);">● 24/7 ACTIVE</span>
+                </div>
+                <div class="card-body chat-container">
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="chat-message">
+                            <div class="chat-avatar">D</div>
+                            <div class="chat-bubble">
+                                Good morning! I've analyzed your overnight biometrics. Your sleep quality was excellent with 4 complete REM cycles. Your resting heart rate of 58 BPM indicates strong cardiovascular fitness.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chat-input-container">
+                        <input type="text" class="chat-input" placeholder="Ask DESTA anything about your health..." id="chatInput">
+                        <button class="chat-send" id="chatSend">➤</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="right-panel">
+            <!-- Genomic Analysis -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">🧬 PHARMACOGENOMIC ENGINE</span>
+                </div>
+                <div class="card-body">
+                    <div class="genome-visual">
+                        <div class="dna-helix">
+                            <svg width="60" height="150" viewBox="0 0 60 150">
+                                <path d="M10,10 Q50,40 10,70 Q50,100 10,130" stroke="url(#dnaGrad)" stroke-width="2" fill="none" opacity="0.6"/>
+                                <path d="M50,10 Q10,40 50,70 Q10,100 50,130" stroke="url(#dnaGrad2)" stroke-width="2" fill="none" opacity="0.6"/>
+                                <circle cx="10" cy="10" r="4" fill="#ff6b6b"><animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite"/></circle>
+                                <circle cx="50" cy="10" r="4" fill="#4ecdc4"><animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/></circle>
+                                <circle cx="30" cy="40" r="4" fill="#ffe66d"><animate attributeName="opacity" values="1;0.5;1" dur="2.5s" repeatCount="indefinite"/></circle>
+                                <circle cx="10" cy="70" r="4" fill="#95e1d3"><animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/></circle>
+                                <circle cx="50" cy="70" r="4" fill="#ff6b6b"><animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite"/></circle>
+                                <circle cx="30" cy="100" r="4" fill="#4ecdc4"><animate attributeName="opacity" values="0.5;1;0.5" dur="2.5s" repeatCount="indefinite"/></circle>
+                                <circle cx="10" cy="130" r="4" fill="#ffe66d"><animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite"/></circle>
+                                <circle cx="50" cy="130" r="4" fill="#95e1d3"><animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/></circle>
+                                <defs>
+                                    <linearGradient id="dnaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#00f0ff"/>
+                                        <stop offset="100%" style="stop-color:#7b2cbf"/>
+                                    </linearGradient>
+                                    <linearGradient id="dnaGrad2" x1="100%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#ff006e"/>
+                                        <stop offset="100%" style="stop-color:#00f0ff"/>
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="gene-info">
+                        <div class="gene-name">CYP2D6 *1/*1</div>
+                        <div class="gene-status">✓ Normal Metabolizer - Standard dosing recommended</div>
+                    </div>
+                    <div class="gene-info">
+                        <div class="gene-name">VKORC1 -1639G>A</div>
+                        <div class="gene-status">⚠ Warfarin sensitivity detected - Reduced dosing advised</div>
+                    </div>
+                    <div class="gene-info">
+                        <div class="gene-name">SLCO1B1 *5/*5</div>
+                        <div class="gene-status">✓ Normal statin metabolism</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security Status -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">🔐 DATA SOVEREIGNTY</span>
+                </div>
+                <div class="card-body">
+                    <div class="security-features">
+                        <div class="security-item">
+                            <div class="security-icon">🛡️</div>
+                            <div class="security-text">
+                                <div class="security-title">Federated Learning</div>
+                                <div class="security-desc">Local training - No raw data extraction</div>
+                            </div>
+                        </div>
+                        <div class="security-item">
+                            <div class="security-icon">🔑</div>
+                            <div class="security-text">
+                                <div class="security-title">Zero-Knowledge Proofs</div>
+                                <div class="security-desc">Verified computations, hidden data</div>
+                            </div>
+                        </div>
+                        <div class="security-item">
+                            <div class="security-icon">☁️</div>
+                            <div class="security-text">
+                                <div class="security-title">Secure Cloud Vault</div>
+                                <div class="security-desc">AES-256 encrypted, cross-border portable</div>
+                            </div>
+                        </div>
+                        <div class="security-item">
+                            <div class="security-icon">📋</div>
+                            <div class="security-text">
+                                <div class="security-title">FHIR Compliant</div>
+                                <div class="security-desc">Healthcare interoperability standard</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alert System -->
+            <div class="card alert-card">
+                <div class="card-header">
+                    <span class="card-title">⚡ AUTONOMOUS PROTOCOLS</span>
+                </div>
+                <div class="card-body">
+                    <div class="alert-item success">
+                        <div class="alert-icon">✓</div>
+                        <div class="alert-content">
+                            <div class="alert-title">Cardiologist Sync Complete</div>
+                            <div class="alert-desc">ECG data transmitted via API</div>
+                        </div>
+                        <div class="alert-time">2m ago</div>
+                    </div>
+                    <div class="alert-item warning">
+                        <div class="alert-icon">◈</div>
+                        <div class="alert-content">
+                            <div class="alert-title">Medication Reminder</div>
+                            <div class="alert-desc">Metformin scheduled in 30 mins</div>
+                        </div>
+                        <div class="alert-time">Pending</div>
+                    </div>
+                    <div class="alert-item success">
+                        <div class="alert-icon">↻</div>
+                        <div class="alert-content">
+                            <div class="alert-title">LSTM Model Updated</div>
+                            <div class="alert-desc">48h prediction accuracy: 94.7%</div>
+                        </div>
+                        <div class="alert-time">15m ago</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Update datetime
+        function updateDateTime() {
+            const now = new Date();
+            const options = { 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit',
+                hour12: false 
+            };
+            document.getElementById('datetime').innerHTML = 
+                `<span>${now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })} | ${now.toLocaleTimeString('en-US', options)}</span>`;
+        }
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+
+        // Simulate live data
+        function simulateVitals() {
+            const heartRate = document.getElementById('heartRate');
+            const glucose = document.getElementById('glucose');
+            const oxygen = document.getElementById('oxygen');
+
+            setInterval(() => {
+                heartRate.textContent = 68 + Math.floor(Math.random() * 10);
+                glucose.textContent = 90 + Math.floor(Math.random() * 15);
+                oxygen.textContent = 96 + Math.floor(Math.random() * 3);
+            }, 3000);
+        }
+        simulateVitals();
+
+        // Chat functionality
+        const chatInput = document.getElementById('chatInput');
+        const chatSend = document.getElementById('chatSend');
+        const chatMessages = document.getElementById('chatMessages');
+
+        const responses = [
+            "Based on your current biometrics, I recommend staying hydrated and taking a 10-minute walk this afternoon to optimize your metabolic state.",
+            "Your HRV patterns suggest excellent stress recovery. Continue with your current sleep schedule for optimal results.",
+            "I've cross-referenced your genomic profile with current medications. No adverse interactions detected. Your CYP2D6 status indicates normal drug metabolism.",
+            "Predictive analysis shows stable glucose trends for the next 48 hours. Your insulin sensitivity appears optimal based on recent meal responses.",
+            "I'm continuously monitoring 847 biomarkers across your Digital Twin. All systems are functioning within optimal parameters.",
+            "Your cardiac risk score remains in the lowest percentile. The LSTM model predicts no concerning patterns in the upcoming forecast window."
+        ];
+
+        function addMessage(text, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'chat-message';
+            messageDiv.innerHTML = `
+                <div class="chat-avatar" style="${isUser ? 'background: linear-gradient(135deg, #ff006e, #7b2cbf);' : ''}">${isUser ? 'U' : 'D'}</div>
+                <div class="chat-bubble">${text}</div>
+            `;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function sendMessage() {
+            const text = chatInput.value.trim();
+            if (text) {
+                addMessage(text, true);
+                chatInput.value = '';
+                
+                setTimeout(() => {
+                    const response = responses[Math.floor(Math.random() * responses.length)];
+                    addMessage(response);
+                }, 1000 + Math.random() * 1000);
+            }
+        }
+
+        chatSend.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        // Particle effect for orb
+        const canvas = document.createElement('canvas');
+        canvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;';
+    </script>
+</body>
+</html>
